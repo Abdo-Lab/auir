@@ -4,7 +4,7 @@
 vim: syntax=groovy
 -*- mode: groovy;-*-
 ================================================================================
-=                           A I - c o n t a i n e r s                          =
+=                     A I | A S S E M B L Y | P I P E L I N E                  =
 ================================================================================
 @Author
 Christopher Dean <cdean11@colostate.edu>
@@ -13,10 +13,10 @@ Christopher Dean <cdean11@colostate.edu>
  https://github.com/cdeanj/ai-containers
 --------------------------------------------------------------------------------
  @Documentation
- https://github.com/cdeanj/ai-containers/blob/master/README.md
+ https://github.com/cdeanj/ai-assembly-pipeline/blob/master/README.md
 --------------------------------------------------------------------------------
 @Licence
- https://github.com/cdeanj/ai-containers/blob/master/LICENSE
+ https://github.com/cdeanj/ai-ssembly-pipeline/blob/master/LICENSE
 --------------------------------------------------------------------------------
  Processes overview
  - Run AI pipeline
