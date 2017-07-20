@@ -10,7 +10,7 @@ vim: syntax=groovy
 Christopher Dean <cdean11@colostate.edu>
 --------------------------------------------------------------------------------
  @Homepage
- https://github.com/cdeanj/ai-containers
+ https://github.com/cdeanj/ai-assembly-pipeline
 --------------------------------------------------------------------------------
  @Documentation
  https://github.com/cdeanj/ai-assembly-pipeline/blob/master/README.md
