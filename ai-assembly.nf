@@ -77,38 +77,40 @@ if( params.genome_index ) {
 	if( !genome_index.exists() ) exit 1, "Reference genome index files could not be found ${params.genome_index}"
 }
 
-/*
- * Remove low quality base pairs and adapter sequences with Trimmomatic
- */
-process QC {
-	container 'chrisd/virus'
+process Trimmomatic {
+    tag { dataset_id }
 
-	publishDir "${params.output}/Preprocessing", mode: "copy"
-
-	errorStrategy 'ignore'
+    publishDir "${params.outdir}/Trimmomatic", mode: 'copy',
+        saveAs: { filename ->
+            if(filename.indexOf("P.fastq") > 0) "Paired$filename"
+            else if(filename.indexOf("U.fastq") > 0) "Unpaired/$filename"
+            else if(filename.indexOf(".log") > 0) "Log/$filename"
+            else {}
+        }
 	
-	maxForks 8
+    input:
+        set dataset_id, file(forward), file(reverse) from read_pairs
 
-	tag { dataset_id }
+    output:
+        set dataset_id, file("${dataset_id}.1P.fastq"), file("${dataset_id}.2P.fastq") into (paired_fastq)
+        set dataset_id, file("${dataset_id}.1U.fastq"), file("${dataset_id}.2U.fastq") into (unpaired_fastq)
+        set dataset_id, file("${dataset_id}.trimmomatic.stats.log") into (log)
 
-	input:
-	set dataset_id, file(forward), file(reverse) from read_pairs
+    """
+    java -jar ${TRIMMOMATIC}/trimmomatic-0.36.jar \
+      PE \
+      -threads ${threads} \
+      $forward $reverse -baseout ${dataset_id} \
+      ILLUMINACLIP:Trimmomatic-0.36/adapters/${adapters}:2:30:10:3:TRUE \
+      LEADING:${leading} \
+      TRAILING:${trailing} \
+      SLIDINGWINDOW:${slidingwindow} \
+      MINLEN:${minlen} \
+      2> ${dataset_id}.trimmomatic.stats.log
+    """
 
-	output:
-	set dataset_id, file("${dataset_id}_1P.fastq"), file("${dataset_id}_2P.fastq") into (trimmed_read_pairs, bwa_read_pairs)
-
-	"""
-	java -jar ${TRIMMOMATIC}/trimmomatic-0.36.jar PE \
-	-threads ${threads} \
-	$forward $reverse -baseout ${dataset_id} \
-	ILLUMINACLIP:Trimmomatic-0.36/adapters/${adapters}:2:30:10:3:TRUE \
-	LEADING:${leading} \
-	TRAILING:${trailing} \
-	SLIDINGWINDOW:${slidingwindow} \
-	MINLEN:${minlen}
-	mv ${dataset_id}_1P ${dataset_id}_1P.fastq
-        mv ${dataset_id}_2P ${dataset_id}_2P.fastq
-	"""
+    mv ${dataset_id}_1P ${dataset_id}.1P.fastq
+    mv ${dataset_id}_2P ${dataset_id}.2P.fastq
 }
 
 
@@ -116,13 +118,7 @@ process QC {
  * Generate genome assemblies with SPAdes
  */
 process SPAdesAssembly {
-	container 'chrisd/virus'
-
 	publishDir "${params.output}/SPAdes_Contigs", mode: "copy"
-
-	errorStrategy 'ignore'
-
-	maxForks 8
 
 	tag { dataset_id }
 	
@@ -140,10 +136,6 @@ process SPAdesAssembly {
 }
 
 process RemoveMinContigs {
-	container 'chrisd/virus'
-
-	errorStrategy 'ignore'
-
 	publishDir "${params.output}/SPAdes_Contigs", mode: "copy"
 
 	maxForks 8
@@ -175,10 +167,6 @@ process RemoveMinContigs {
 process BlastContigs {
 	publishDir "${params.output}/Blast", mode: "copy"
 
-	errorStrategy 'ignore'
-
-	maxForks 8
-
 	tag { dataset_id }
 
 	input:
@@ -196,10 +184,6 @@ process BlastContigs {
 
 process RemoveDuplicateAnnotations {
 	publishDir "${params.output}/CleanedContigs", mode: "copy"
-
-	errorStrategy 'ignore'
-
-	maxForks 8
 
 	input:
 	set dataset_id, file(contigs) from annotated_contigs
@@ -259,7 +243,7 @@ process RemoveDuplicateAnnotations {
 	publishDir "${params.output}/Alignment", mode: "copy"
 
 	input:
-	set dataset_id, file(
+	set dataset_id, file()
 
 	output:
 	set dataset_id, file("${dataset_id}_alignment.sam")
@@ -272,11 +256,7 @@ process RemoveDuplicateAnnotations {
 
 
 /*process AlignToReference {
-	errorStrategy 'ignore'
-
 	publishDir "${params.output}/Alignment", mode: "copy"
-
-	maxForks 8
 
 	tag { dataset_id }
 
