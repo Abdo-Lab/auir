@@ -73,7 +73,6 @@ process Trimmomatic {
     mv ${dataset_id}_1U ${dataset_id}.1U.fastq
     mv ${dataset_id}_2U ${dataset_id}.2U.fastq
     """
-
 }
 
 process SPAdes {
@@ -98,6 +97,24 @@ process SPAdes {
 
     mv output/contigs.fasta .
     mv contigs.fasta ${dataset_id}.contigs.fa
+    """
+}
+
+process Blastn {
+    tag { dataset_id }
+
+    publishDir "${params.output}/Blastn", mode: 'copy'
+
+    input:
+        set dataset_id, file(contigs) from spades_contigs
+
+    output:
+        set dataset_id, file("${dataset_id}.contigs.annotated.fa") into (annotated_spades_contigs)
+
+    """
+    blastn -db InfluenzaDB -query ${contigs} -max_hsps 1 -max_target_seqs 1 -outfmt "10 stitle" -num_threads ${threads} > ${dataset_id}.contig.description.tmp
+    cat ${dataset_id}.contig.description.tmp | sed -e '/Influenza/s/^/>/' > ${dataset_id}.contig.description.txt
+    awk '/^>/ { getline <"${dataset_id}.contig.description.txt" } 1 ' ${contigs} > ${dataset_id}.contigs.annotated.fa
     """
 }
 
