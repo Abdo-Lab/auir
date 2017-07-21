@@ -90,7 +90,7 @@ process Trimmomatic {
 process SPAdes {
     tag { dataset_id }
 
-    publishDir "${params.output}/SPAdes_Contigs", mode: "copy"
+    publishDir "${params.output}/SPAdes", mode: "copy"
 
     input:
         set dataset_id, file(forward), file(reverse) from paired_fastq
@@ -102,6 +102,7 @@ process SPAdes {
     spades.py \
       -t ${threads} \
       --only-assembler \
+      --cov-cutoff auto \
       -1 ${forward} \
       -2 ${reverse} \
       -o output
