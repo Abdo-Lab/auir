@@ -25,9 +25,9 @@ Christopher Dean <cdean11@colostate.edu>
 ================================================================================
 */
 
-params.reads = "$baseDir/data/raw/*_R{1,2}_001.fastq"
-params.adapters = "$baseDir/data/adapters/nextera.fa"
-params.output = "./test"
+//params.reads = "$baseDir/data/raw/*_R{1,2}_001.fastq"
+//params.adapters = "$baseDir/data/adapters/nextera.fa"
+//params.output = "./test"
 params.threads = 1
 
 adapters = file(params.adapters)
