@@ -118,6 +118,39 @@ process Blastn {
     """
 }
 
+annotated_assemblies = Channel.empty()
+    .mix(annotated_spades_contigs)
+    .flatten()
+    .toList()
+
+process QUAST {
+    tag { dataset_id }
+
+    publishDir "${params.output}/QUAST", mode: 'copy'
+
+    input:
+        file(annotated_contigs) from annotated_assemblies
+
+    output:
+        set file("report.tsv") into (quast_logs)
+
+    """
+    quast.py \
+      ${annotated_contigs} \
+      --no-plots \
+      --no-html \
+      --no-icarus \
+      --no-snps \
+      --no-sv \
+      -t ${threads} \
+      -o output
+
+    mv output/report.tsv .
+    """
+}
+
+
+
 /*process RemoveMinContigs {
 	publishDir "${params.output}/SPAdes_Contigs", mode: "copy"
 
