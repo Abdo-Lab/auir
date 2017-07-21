@@ -25,15 +25,10 @@ Christopher Dean <cdean11@colostate.edu>
 ================================================================================
 */
 
-params.reads = "$baseDir/cov_data/*_R{1,2}_001.fq"
-//params.reads = "/home/chris_dean/projects/influenza/scripts/14999-1_S5_L001_R1_001/*_R{1,2}_001.fq"
-params.adapters = "$baseDir/adapters/adapters.fa"
-params.output = "./TEST"
-params.host = ""
-params.genome = "$baseDir/data/genome/H3N8.fasta"
-params.host_index = ""
-params.genome_index = ""
-params.threads = 1;
+params.reads = "$baseDir/data/raw/*_R{1,2}_001.fastq"
+params.adapters = "$baseDir/data/adapters/nextera.fa"
+params.output = "./test"
+params.threads = 1
 
 adapters = file(params.adapters)
 threads = params.threads
@@ -48,41 +43,17 @@ trailing = params.trailing
 slidingwindow = params.slidingwindow
 minlen = params.minlen
 
-
-/*
- * Validate input parameters
- */
 Channel
-        .fromFilePairs( params.reads, flat: true )
-	.ifEmpty { exit 1, "Read pairs could not be found: ${params.reads}" }
-        .into { read_pairs }
-
-if( params.host ) {
-	host = file(params.host)
-	if( !host.exists() ) exit 1, "Host genome could not be found ${params.host}"
-}
-
-if( params.genome) {
-	genome = file(params.genome)
-	if( !genome.exists() ) exit 1, "Reference genome could not be found ${params.genome}"
-}
-
-if( params.host_index ) {
-	host_index = Channel.fromPath( params.host_index )
-	if( !host_index.exists() ) exit 1, "Host genome index files could not be found ${params.host_index}"
-}
-
-if( params.genome_index ) {
-	genome_index = Channel.fromPath( params.genome_index )
-	if( !genome_index.exists() ) exit 1, "Reference genome index files could not be found ${params.genome_index}"
-}
+    .fromFilePairs( params.reads, flat: true )
+    .ifEmpty { exit 1, "Read pair files could not be found: ${params.reads}" }
+    .into { read_pairs }
 
 process Trimmomatic {
     tag { dataset_id }
 
-    publishDir "${params.outdir}/Trimmomatic", mode: 'copy',
+    publishDir "${params.output}/Trimmomatic", mode: 'copy',
         saveAs: { filename ->
-            if(filename.indexOf("P.fastq") > 0) "Paired$filename"
+            if(filename.indexOf("P.fastq") > 0) "Paired/$filename"
             else if(filename.indexOf("U.fastq") > 0) "Unpaired/$filename"
             else if(filename.indexOf(".log") > 0) "Log/$filename"
             else {}
@@ -101,23 +72,26 @@ process Trimmomatic {
       PE \
       -threads ${threads} \
       $forward $reverse -baseout ${dataset_id} \
-      ILLUMINACLIP:Trimmomatic-0.36/adapters/${adapters}:2:30:10:3:TRUE \
+      ILLUMINACLIP:${adapters}:2:30:10:3:TRUE \
       LEADING:${leading} \
       TRAILING:${trailing} \
       SLIDINGWINDOW:${slidingwindow} \
       MINLEN:${minlen} \
       2> ${dataset_id}.trimmomatic.stats.log
-    """
 
     mv ${dataset_id}_1P ${dataset_id}.1P.fastq
     mv ${dataset_id}_2P ${dataset_id}.2P.fastq
+    mv ${dataset_id}_1U ${dataset_id}.1U.fastq
+    mv ${dataset_id}_2U ${dataset_id}.2U.fastq
+    """
+
 }
 
 
 /*
  * Generate genome assemblies with SPAdes
  */
-process SPAdesAssembly {
+/*process SPAdesAssembly {
 	publishDir "${params.output}/SPAdes_Contigs", mode: "copy"
 
 	tag { dataset_id }
@@ -133,9 +107,9 @@ process SPAdesAssembly {
 	mv output/contigs.fasta .
 	mv contigs.fasta ${dataset_id}_contigs.fa
 	"""
-}
+}*/
 
-process RemoveMinContigs {
+/*process RemoveMinContigs {
 	publishDir "${params.output}/SPAdes_Contigs", mode: "copy"
 
 	maxForks 8
@@ -162,9 +136,9 @@ process RemoveMinContigs {
 
         SeqIO.write(target_records, "${dataset_id}_contigs.fa", "fasta")
 	"""
-}
+}*/
 
-process BlastContigs {
+/*process BlastContigs {
 	publishDir "${params.output}/Blast", mode: "copy"
 
 	tag { dataset_id }
@@ -180,9 +154,9 @@ process BlastContigs {
 	cat ${dataset_id}_annotations | sed -e '/Influenza/s/^/>/' > ${dataset_id}_annotations.txt
 	awk '/^>/ { getline <"${dataset_id}_annotations.txt" } 1 ' ${contigs} > ${dataset_id}_annotated_contigs.fa
 	"""
-}
+}*/
 
-process RemoveDuplicateAnnotations {
+/*process RemoveDuplicateAnnotations {
 	publishDir "${params.output}/CleanedContigs", mode: "copy"
 
 	input:
@@ -216,7 +190,7 @@ process RemoveDuplicateAnnotations {
 
 	SeqIO.write(target, "${dataset_id}_clean_contigs.fa", "fasta")
 	"""
-}
+}*/
 
 
 
