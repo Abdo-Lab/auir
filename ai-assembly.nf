@@ -54,7 +54,7 @@ process Trimmomatic {
     output:
         set dataset_id, file("${dataset_id}.1P.fastq"), file("${dataset_id}.2P.fastq") into (paired_fastq)
         set dataset_id, file("${dataset_id}.1U.fastq"), file("${dataset_id}.2U.fastq") into (unpaired_fastq)
-        set dataset_id, file("${dataset_id}.trimmomatic.stats.log") into (log)
+        set dataset_id, file("${dataset_id}.trimmomatic.stats.log") into (trimmomatic_logs)
 
     """
     java -jar ${TRIMMOMATIC}/trimmomatic-0.36.jar \
@@ -124,8 +124,6 @@ annotated_assemblies = Channel.empty()
     .toList()
 
 process QUAST {
-    tag { dataset_id }
-
     publishDir "${params.output}/QUAST", mode: 'copy'
 
     input:
@@ -142,6 +140,7 @@ process QUAST {
       --no-icarus \
       --no-snps \
       --no-sv \
+      --est-ref-size 13600 \
       -t ${threads} \
       -o output
 
@@ -149,143 +148,23 @@ process QUAST {
     """
 }
 
+multiQCReports = Channel.empty()
+    .mix(
+        trimmomatic_logs,
+        quast_logs
+    )
+    .flatten().toList()
 
+process MultiQC {
+    publishDir "${params.output}/MultiQC", mode: 'copy'
 
-/*process RemoveMinContigs {
-	publishDir "${params.output}/SPAdes_Contigs", mode: "copy"
+    input:
+        file('*') from multiQCReports
 
-	maxForks 8
+    output:
+        set file("*multiqc_report.html") into multiQCReport
 
-	tag { dataset_id }
-
-	input:
-	set dataset_id, file(contigs) from spades_contigs
-
-	output:
-	set dataset_id, file("${dataset_id}_contigs.fa") into min_contigs
-
-	"""
-        #!/usr/bin/python       
-        from Bio import SeqIO
-
-        fasta_fp = "${contigs}"
-        record_dict = list(SeqIO.parse(fasta_fp, "fasta"))
-
-        target_records = []
-        for record in record_dict:
-                if len(record.seq) >= 200:
-                        target_records.append(record)
-
-        SeqIO.write(target_records, "${dataset_id}_contigs.fa", "fasta")
-	"""
-}*/
-
-/*process BlastContigs {
-	publishDir "${params.output}/Blast", mode: "copy"
-
-	tag { dataset_id }
-
-	input:
-	set dataset_id, file(contigs) from min_contigs
-
-	output:
-	set dataset_id, file("${dataset_id}_annotated_contigs.fa") into annotated_contigs
-
-	"""
-	blastn -db nt -query ${contigs} -num_alignments 1 -outfmt "10 stitle" -num_threads ${threads} > ${dataset_id}_annotations
-	cat ${dataset_id}_annotations | sed -e '/Influenza/s/^/>/' > ${dataset_id}_annotations.txt
-	awk '/^>/ { getline <"${dataset_id}_annotations.txt" } 1 ' ${contigs} > ${dataset_id}_annotated_contigs.fa
-	"""
-}*/
-
-/*process RemoveDuplicateAnnotations {
-	publishDir "${params.output}/CleanedContigs", mode: "copy"
-
-	input:
-	set dataset_id, file(contigs) from annotated_contigs
-
-	output:
-	set dataset_id, file("${dataset_id}_clean_contigs.fa") into cleaned_contigs
-
-	"""
-	#!/usr/bin/python
-	from Bio import SeqIO
-
-	fasta_fp = "${contigs}"
-	record_dict = list(SeqIO.parse(fasta_fp, "fasta"))
-
-	mapper = {}
-
-	for record in record_dict:
-		if record.description in mapper:
-			if len(record.seq) > mapper[record.description]:
-				mapper[record.description] = len(record.seq)
-
-		else:
-			mapper[record.description] = len(record.seq)
-
-	target = []
-
-	for record in record_dict:
-		if record.description in mapper and len(record.seq) == mapper[record.description]:
-			target.append(record)
-
-	SeqIO.write(target, "${dataset_id}_clean_contigs.fa", "fasta")
-	"""
-}*/
-
-
-
-/*process QuastEvaluation {
-	publishDir "${params.output}/QuastEvaluation", mode: "move"
-
-	tag { dataset_id }
-
-	input:
-	set dataset_id, file(quast_contigs) from cleaned_contigs
-
-	output:
-	file("output/*") into quast_evaluation
-	
-	"""
-	quast.py ${quast_contigs} --space-efficient --threads ${threads} -o output
-	"""
-}*/
-
-
-
-
-/*process AlignReadsToContigs {
-	publishDir "${params.output}/Alignment", mode: "copy"
-
-	input:
-	set dataset_id, file()
-
-	output:
-	set dataset_id, file("${dataset_id}_alignment.sam")
-
-	"""
-	bwa index ${contigs}
-	bwa mem ${contigs} ${forward} ${reverse} > ${dataset_id}_alignment.sam
-	"""
-}*/
-
-
-/*process AlignToReference {
-	publishDir "${params.output}/Alignment", mode: "copy"
-
-	tag { dataset_id }
-
-	input:
-	set dataset_id, file(contigs) from min_contigs
-	file genome
-	file index from genome_index.first()
-
-	output:
-	set dataset_id, file("${dataset_id}_alignment.sam") into quast_contigs
-
-	"""
-	bwa mem -t ${threads} ${genome} ${contigs} > ${dataset_id}_alignment.sam
-	"""
-}*/
-
+    """
+    multiqc -f -v .
+    """
+}
