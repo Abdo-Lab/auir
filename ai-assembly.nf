@@ -87,27 +87,29 @@ process Trimmomatic {
 
 }
 
+process SPAdes {
+    tag { dataset_id }
 
-/*
- * Generate genome assemblies with SPAdes
- */
-/*process SPAdesAssembly {
-	publishDir "${params.output}/SPAdes_Contigs", mode: "copy"
+    publishDir "${params.output}/SPAdes_Contigs", mode: "copy"
 
-	tag { dataset_id }
-	
-	input:
-	set dataset_id, file(forward), file(reverse) from trimmed_read_pairs
+    input:
+        set dataset_id, file(forward), file(reverse) from paired_fastq
 
-	output:
-	set dataset_id, file("${dataset_id}_contigs.fa") into spades_contigs
+    output:
+        set dataset_id, file("${dataset_id}.contigs.fa") into (spades_contigs)
 
-	"""
-	spades.py -t ${threads} --pe1-1 ${forward} --pe1-2 ${reverse} -o output
-	mv output/contigs.fasta .
-	mv contigs.fasta ${dataset_id}_contigs.fa
-	"""
-}*/
+    """
+    spades.py \
+      -t ${threads} \
+      --only-assembler \
+      -1 ${forward} \
+      -2 ${reverse} \
+      -o output
+
+    mv output/contigs.fasta .
+    mv contigs.fasta ${dataset_id}.contigs.fa
+    """
+}
 
 /*process RemoveMinContigs {
 	publishDir "${params.output}/SPAdes_Contigs", mode: "copy"
