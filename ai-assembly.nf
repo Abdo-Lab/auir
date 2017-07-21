@@ -27,6 +27,7 @@ Christopher Dean <cdean11@colostate.edu>
 
 threads = params.threads
 adapters = file(params.adapters)
+fqc_adapters = file(params.fqc_adapters)
 leading = params.leading
 trailing = params.trailing
 slidingwindow = params.slidingwindow
@@ -51,7 +52,6 @@ process FastQC {
     """
     mkdir output
     fastqc -f fastq ${forward} ${reverse} -t ${threads} -o output
-    chmod 755 output/*.zip
     mv output/*.zip .
     """
 }
