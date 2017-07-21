@@ -25,19 +25,8 @@ Christopher Dean <cdean11@colostate.edu>
 ================================================================================
 */
 
-//params.reads = "$baseDir/data/raw/*_R{1,2}_001.fastq"
-//params.adapters = "$baseDir/data/adapters/nextera.fa"
-//params.output = "./test"
-params.threads = 1
-
-adapters = file(params.adapters)
 threads = params.threads
-
-params.leading = 3
-params.trailing = 3
-params.slidingwindow = "4:15"
-params.minlen = 36
-
+adapters = file(params.adapters)
 leading = params.leading
 trailing = params.trailing
 slidingwindow = params.slidingwindow
