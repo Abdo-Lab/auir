@@ -35,7 +35,26 @@ minlen = params.minlen
 Channel
     .fromFilePairs( params.reads, flat: true )
     .ifEmpty { exit 1, "Read pair files could not be found: ${params.reads}" }
-    .into { read_pairs }
+    .into { read_pairs; fastqc_pairs }
+
+process FastQC {
+    tag { dataset_id }
+
+    publishDir "${params.output}/FastQC", mode: 'copy'
+
+    input:
+        set dataset_id, file(forward), file(reverse) from fastqc_pairs
+
+    output:
+        set dataset_id, file("*_fastqc.zip") into (fastqc_logs)
+
+    """
+    mkdir output
+    fastqc -f fastq ${forward} ${reverse} -t ${threads} -o output
+    chmod 755 output/*.zip
+    mv output/*.zip .
+    """
+}
 
 process Trimmomatic {
     tag { dataset_id }
@@ -151,7 +170,8 @@ process QUAST {
 multiQCReports = Channel.empty()
     .mix(
         trimmomatic_logs,
-        quast_logs
+        quast_logs,
+        fastqc_logs
     )
     .flatten().toList()
 
