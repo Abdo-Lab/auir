@@ -36,7 +36,7 @@ minlen = params.minlen
 Channel
     .fromFilePairs( params.reads, flat: true )
     .ifEmpty { exit 1, "Read pair files could not be found: ${params.reads}" }
-    .into { read_pairs; fastqc_pairs }
+    .into { read_pairs; fastqc_pairs; alignment_pairs }
 
 process FastQC {
     tag { dataset_id }
@@ -128,7 +128,7 @@ process Blastn {
         set dataset_id, file(contigs) from spades_contigs
 
     output:
-        set dataset_id, file("${dataset_id}.contigs.annotated.fa") into (annotated_spades_contigs)
+        set dataset_id, file("${dataset_id}.contigs.annotated.fa") into (annotated_spades_contigs, annotated_spades_contigs2)
 
     """
     blastn -db InfluenzaDB -query ${contigs} -max_hsps 1 -max_target_seqs 1 -outfmt "10 stitle" -num_threads ${threads} > ${dataset_id}.contig.description.tmp
@@ -142,7 +142,26 @@ annotated_assemblies = Channel.empty()
     .flatten()
     .toList()
 
-process QUAST {
+reads_and_contigs = alignment_pairs.combine(annotated_spades_contigs2, by: 0)
+
+process BWA {
+    tag { dataset_id }
+
+    publishDir "${params.output}/BWA", mode: "copy"
+
+    input:
+        set dataset_id, file(forward), file(reverse), file(contigs) from reads_and_contigs
+
+    output:
+        set dataset_id, file("${dataset_id}.alignment.sam") into (alignments)
+
+    """
+    bwa index ${contigs}
+    bwa mem ${contigs} ${forward} ${reverse} -t ${threads} > ${dataset_id}.alignment.sam
+    """
+}
+
+/*process QUAST {
     publishDir "${params.output}/QUAST", mode: 'copy'
 
     input:
@@ -187,4 +206,4 @@ process MultiQC {
     """
     multiqc -f -v .
     """
-}
+}*/
