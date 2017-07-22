@@ -153,11 +153,27 @@ process BWA {
         set dataset_id, file(forward), file(reverse), file(contigs) from reads_and_contigs
 
     output:
-        set dataset_id, file("${dataset_id}.alignment.sam") into (alignments)
+        set dataset_id, file("${dataset_id}.alignment.sam") into (sams)
 
     """
     bwa index ${contigs}
     bwa mem ${contigs} ${forward} ${reverse} -t ${threads} > ${dataset_id}.alignment.sam
+    """
+}
+
+process SAMToBAM {
+    tag { dataset_id }
+
+    publishDir "${params.output}/BWA", mode: "copy"
+
+    input:
+        set dataset_id, file(sam) from sams
+
+    output:
+        set dataset_id, file("${dataset_id}.alignment.bam") into (bams)
+
+    """
+    samtools view -bS ${sam} | samtools sort -@ ${threads} -o ${dataset_id}.alignment.bam
     """
 }
 
