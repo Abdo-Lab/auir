@@ -41,3 +41,9 @@ TGAGGAAATAAGGTGGTTAGTTGAAGAAGTACGACACAGATTGAAGGCAACAGAAAATAG
 TTTCGAACAAATAACATTTATGCAAGCCTTACAACTACTGCTTGAAGTAGAGCAAGAGAT
 AAGGACTTTCTCGTTTCAGCTTATTTAATGATAAAAAACACCCTTGTTTCTACTGGCGC
 ```
+
+### Bedtools
+
+Bedtools is used to compute genome coverage statistics for each of the eight influenza genomes segments. In this plot, the depth of coverage is computed for each base in each of the genomic segments.
+
+![bedtools](images/depth_of_coverage.png)
