@@ -133,6 +133,7 @@ process Blastn {
     """
     blastn -db InfluenzaDB -query ${contigs} -max_hsps 1 -max_target_seqs 1 -outfmt "10 stitle" -num_threads ${threads} > ${dataset_id}.contig.description.tmp
     cat ${dataset_id}.contig.description.tmp | sed -e '/Influenza/s/^/>/' > ${dataset_id}.contig.description.txt
+    sed -i 's/ /_/g' ${dataset_id}.contig.description.txt
     awk '/^>/ { getline <"${dataset_id}.contig.description.txt" } 1 ' ${contigs} > ${dataset_id}.contigs.annotated.fa
     """
 }
@@ -174,6 +175,22 @@ process SAMToBAM {
 
     """
     samtools view -bS ${sam} | samtools sort -@ ${threads} -o ${dataset_id}.alignment.bam
+    """
+}
+
+process Bedtools {
+    tag { dataset_id }
+
+    publishDir "${params.output}/Bedtools", mode: "copy"
+
+    input:
+        set dataset_id, file(bam) from bams
+
+    output:
+        set dataset_id, file("${dataset_id}.alignment.coordinates") into (coordinates)
+
+    """
+    bedtools genomecov -ibam ${bam} > ${dataset_id}.alignment.coordinates
     """
 }
 
