@@ -1,7 +1,6 @@
 Software Requirements
 ---------------------
-To run the pipeline, you will need the following libraries and tools installed on your server or local system. In addition to the installation methods linked below, you can use package managers like Homebrew on MAC or APT on Linux. 
-
+To run the pipeline, you will need the following libraries and tools installed on your server or local system.
 
   - Java 7+
   - Docker
