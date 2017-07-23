@@ -1,6 +1,6 @@
 Software Requirements
 ---------------------
-To run the pipeline, you will need the following libraries and tools installed on your server or local system.
+To run the pipeline, you will need the following libraries and tools installed on your server or local machine.
 
   - Java 7+
   - Docker
