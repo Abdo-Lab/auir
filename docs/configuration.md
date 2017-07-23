@@ -1,7 +1,7 @@
 Configuration
 -------------
 
-The pipeline is configured with a configuration file that can be used to modify input parameters for a variety of processes. To modify these parameters, open the nextflow.config file.
+The pipeline is configured with a configuration file that can be used to modify input parameters for a variety of processes. To modify these parameters, open the nextflow.config file and update the desired parameters.
 
 ### Input Sequences
 ```
