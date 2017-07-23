@@ -9,10 +9,11 @@ The purpose of this pipeline is to act as a prelimnary analysis platform for the
 
 More Information
 ----------------
-
-  - Installation
-  - Usage
-  - Configuration
-  - Output
-  - Dependencies
-  - Acknowledgements
+  - [Requirements](https://github.com/cdeanj/ai-assembly-pipeline/edit/master/requirements.md)
+  - [Installation](https://github.com/cdeanj/ai-assembly-pipeline/edit/master/docs/installation.md)
+  - [Usage](https://github.com/cdeanj/ai-assembly-pipeline/edit/master/usage.md)
+  - [Configuration](https://github.com/cdeanj/ai-assembly-pipeline/edit/master/configuration.md)
+  - [Output](https://github.com/cdeanj/ai-assembly-pipeline/edit/master/output.md)
+  - [Dependencies](https://github.com/cdeanj/ai-assembly-pipeline/edit/master/dependencies.md)
+  - [Contact](https://github.com/cdeanj/ai-assembly-pipeline/edit/master/contact.md)
+  - [Acknowledgements](https://github.com/cdeanj/ai-assembly-pipeline/edit/master/acknowledgements.md)
