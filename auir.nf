@@ -25,6 +25,11 @@ Christopher Dean <cdean11@colostate.edu>
 ================================================================================
 */
 
+if( params.help ) {
+    help()
+    return
+}
+
 index = file(params.index)
 
 reference = file(params.reference)
@@ -98,34 +103,6 @@ process Trimmomatic {
     mv ${dataset_id}_2P ${dataset_id}.2P.fastq
     mv ${dataset_id}_1U ${dataset_id}.1U.fastq
     mv ${dataset_id}_2U ${dataset_id}.2U.fastq
-    """
-}
-
-process Index {
-    tag { dataset_id }
-
-    publishDir "${params.output}/BWA", mode: 'copy'
-
-    input:
-
-    output:
-
-    """
-
-    """
-}
-
-process RemoveHostDNA {
-    tag { dataset_id }
-
-    publishDir "${params.output}/BWA", mode: 'copy'
-
-    input:
-
-    output:
-
-    """
-
     """
 }
 
@@ -289,4 +266,17 @@ process MultiQC {
     """
     multiqc -f -v .
     """
+}
+
+def help() {
+    log.info "Usage: "
+    log.info "  ./nextflow run auir.nf --reads <reads> --adapters <adapters> --threads <threads> --output <output>"
+    log.info "Where: "
+    log.info "     <reads> is the directory location of your FASTQ formatted read pairs"
+    log.info "  <adapters> is the location of your FASTA formatted adapter sequences"
+    log.info "   <threads> is the number of threads to use for each process"
+    log.info "    <output> is the output directory to write intermediate outputs to"
+    log.info "     <index> is the directory location of your host genome index files"
+    log.info "      <host> is the location of your FASTA formatted host genome"
+    log.info "      <help> displays the help message"
 }
