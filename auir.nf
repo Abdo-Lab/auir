@@ -209,9 +209,7 @@ process AggregateCounts {
     """
 }
 
-
-
-/*process QUAST {
+process QUAST {
     publishDir "${params.output}/QUAST", mode: 'copy'
 
     input:
@@ -256,4 +254,4 @@ process MultiQC {
     """
     multiqc -f -v .
     """
-}*/
+}
