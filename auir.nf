@@ -101,6 +101,34 @@ process Trimmomatic {
     """
 }
 
+process Index {
+    tag { dataset_id }
+
+    publishDir "${params.output}/BWA", mode: 'copy'
+
+    input:
+
+    output:
+
+    """
+
+    """
+}
+
+process RemoveHostDNA {
+    tag { dataset_id }
+
+    publishDir "${params.output}/BWA", mode: 'copy'
+
+    input:
+
+    output:
+
+    """
+
+    """
+}
+
 process SPAdes {
     tag { dataset_id }
 
