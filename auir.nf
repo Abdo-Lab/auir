@@ -187,12 +187,15 @@ process Bedtools {
         set dataset_id, file(bam) from bams
 
     output:
-        set dataset_id, file("${dataset_id}.alignment.coordinates") into (coordinates)
+        set dataset_id, file("${dataset_id}.depth.coordinates") into (coordinates)
 
     """
-    bedtools genomecov -ibam ${bam} > ${dataset_id}.alignment.coordinates
+    bedtools genomecov -d -ibam ${bam} > ${dataset_id}.depth.coordinates
+    sed -i 's/^/${dataset_id}\t/' ${dataset_id}.depth.coordinates
     """
 }
+
+
 
 /*process QUAST {
     publishDir "${params.output}/QUAST", mode: 'copy'
