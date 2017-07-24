@@ -187,11 +187,25 @@ process Bedtools {
         set dataset_id, file(bam) from bams
 
     output:
-        set dataset_id, file("${dataset_id}.depth.coordinates") into (coordinates)
+        file("${dataset_id}.depth.coordinates") into (coordinates)
 
     """
     bedtools genomecov -d -ibam ${bam} > ${dataset_id}.depth.coordinates
     sed -i 's/^/${dataset_id}\t/' ${dataset_id}.depth.coordinates
+    """
+}
+
+process AggregateCounts {
+    publishDir "${params.output}/Bedtools", mode: "copy"
+
+    input:
+        file(counts) from coordinates.toSortedList()
+
+    output:
+        file("aggregated_counts.tsv") into res
+
+    """
+    cat ${counts} > aggregated_counts.tsv
     """
 }
 
