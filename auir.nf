@@ -25,9 +25,16 @@ Christopher Dean <cdean11@colostate.edu>
 ================================================================================
 */
 
+index = file(params.index)
+
+reference = file(params.reference)
+
 threads = params.threads
+
 adapters = file(params.adapters)
+
 fqc_adapters = file(params.fqc_adapters)
+
 leading = params.leading
 trailing = params.trailing
 slidingwindow = params.slidingwindow
