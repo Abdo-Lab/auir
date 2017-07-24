@@ -28,6 +28,11 @@ This pipeline uses a variety of open-source tools. The tools used, descriptions,
   - Version: N/A
   - Source: https://www.ncbi.nlm.nih.gov/genomes/FLU/Database/nph-select.cgi?go=database
   
+### MultiQC
+  - Description: MultiQC is a tool that utilizes software logs to create html reports.
+  - Version: 1.0
+  - DOI: https://doi.org/10.1093/bioinformatics/btw354
+  
 ### Samtools
   - Description: Samtools is a program for manipulating and extracting useful information from alignment files in SAM or BAM format.
   - Version: 1.4.1
@@ -47,9 +52,4 @@ This pipeline uses a variety of open-source tools. The tools used, descriptions,
   - Description: QUAST is a quality assessment tool for evaluating genome assemblies.
   - Version: 4.5
   - DOI: https://doi.org/10.1093/bioinformatics/btt086
-  
-### MultiQC
-  - Description: MultiQC is a tool that utilizes software logs to create html reports.
-  - Version: 1.0
-  - DOI: https://doi.org/10.1093/bioinformatics/btw354
 
