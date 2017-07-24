@@ -10,16 +10,16 @@ vim: syntax=groovy
 Christopher Dean <cdean11@colostate.edu>
 --------------------------------------------------------------------------------
  @Homepage
- https://github.com/cdeanj/ai-assembly-pipeline
+ https://github.com/cdeanj/auir
 --------------------------------------------------------------------------------
  @Documentation
- https://github.com/cdeanj/ai-assembly-pipeline/blob/master/README.md
+ https://github.com/cdeanj/auir/blob/master/README.md
 --------------------------------------------------------------------------------
-@Licence
- https://github.com/cdeanj/ai-ssembly-pipeline/blob/master/LICENSE
+ @Licence
+ https://github.com/cdeanj/auir/blob/master/LICENSE
 --------------------------------------------------------------------------------
  Processes overview
- - Run AI pipeline
+ - Run auir influenza pipeline
 ================================================================================
 =                           C O N F I G U R A T I O N                          =
 ================================================================================
