@@ -10,5 +10,5 @@ TODOs
 ### Code
 
 - [ ] Add help message.
-- [x] Aggregate bedtools count data into single file text file.
+- [x] Aggregate bedtools count data into single text file.
 - [ ] Find a way to graphically display the above data.
