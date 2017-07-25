@@ -5,7 +5,7 @@ TODOs
 
 - [ ] Add content to output section.
 - [ ] Add content to usage section.
-- [ ] Add additional content to installation section.
+- [x] Add additional content to installation section.
 
 ### Code
 
