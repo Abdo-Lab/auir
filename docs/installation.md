@@ -12,7 +12,7 @@ $ mv nextflow /usr/local/bin
 
 ### Step 2 -- Download Docker Containers
 
-This command will download each of the required tools to run the pipeline. The Dockerfiles for each tool can be found on [Dockerhub](https://hub.docker.com/r/cdeanj/auir/).
+This command will download each of the required tools to run the pipeline.
 ```
 $ docker pull cdeanj/auir -a 
 ```
