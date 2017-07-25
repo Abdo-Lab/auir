@@ -11,12 +11,13 @@ $ mv nextflow /usr/local/bin
 ```
 
 ### Step 2 -- Download Docker Containers
-This command will use Docker to download each of the tools required to run the pipeline. The Dockerfiles for each of downloaded tools can be found on [Dockerhub](https://hub.docker.com/r/cdeanj/auir/). This can take between 10 and 15 minutes depending on your connection speed.
+
+This command will download each of the required tools to run the pipeline. The Dockerfiles for each tool can be found on [Dockerhub](https://hub.docker.com/r/cdeanj/auir/).
 ```
 $ docker pull cdeanj/auir -a 
 ```
 
-When the download is done, you should have nine Docker images.
+When the download is complete, you should have nine Docker images.
 ```
 $ docker images
 REPOSITORY          TAG                 IMAGE ID            CREATED             SIZE
