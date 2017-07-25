@@ -9,6 +9,18 @@ The pipeline is configured with a configuration file that can be used to modify 
 reads = "data/raw/*_R{1,2}_001.fastq"
 ```
 
+### Index Files
+```
+/* Location of host genome index files */
+index = "data/genome/index/*"
+```
+
+### Host Genome
+```
+/* Location of host genome file */
+host = "data/genome/host/gallus.fa"
+```
+
 ### Adapter Sequences
 ```
 /* Location of adapter sequences */
