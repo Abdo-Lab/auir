@@ -279,4 +279,8 @@ def help() {
     log.info "     <index> is the directory location of your host genome index files"
     log.info "      <host> is the location of your FASTA formatted host genome"
     log.info "      <help> displays the help message"
+    log.info "Contact: "
+    log.info "  Christopher Dean <cdean11@colostate.edu>"
+    log.info "Version: "
+    log.info "  Auir 1.0"
 }
