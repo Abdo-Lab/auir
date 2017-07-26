@@ -25,14 +25,19 @@ Christopher Dean <cdean11@colostate.edu>
 ================================================================================
 */
 
-if( params.help ) {
+
+/*if( params.help ) {
     help()
     return
+}*/
+
+if( params.index ) {
+    index = Channel.fromPath(params.index).toSortedList()
+    println index
 }
 
-index = file(params.index)
-
-reference = file(params.reference)
+host = file(params.host)
+println host
 
 threads = params.threads
 
@@ -106,7 +111,45 @@ process Trimmomatic {
     """
 }
 
-process SPAdes {
+if( !params.index ) {
+    process BuildHostIndex {
+        tag { host.baseName }
+
+        publishDir "${params.output}/BWA", mode: "copy"
+
+        input:
+            file(host)
+
+        output:
+            file '*' into index
+
+        """
+        bwa index ${host}
+        """
+    }
+}
+
+process RemoveHostDNA {
+        echo true
+
+        tag { host.baseName }
+        
+        publishDir "${params.output}/BWA", mode: "copy"
+        
+        input:
+            set dataset_id, file(forward), file(reverse) from paired_fastq
+            file idx from index.first()
+            file host
+            
+        output:
+            set dataset_id, file("${dataset_id}.host.sam") into host_sam
+            
+        """ 
+        bwa mem ${host} ${forward} ${reverse} -t ${threads} > ${dataset_id}.host.sam
+        """ 
+    }  
+
+/*process SPAdes {
     tag { dataset_id }
 
     publishDir "${params.output}/SPAdes", mode: "copy"
@@ -266,7 +309,7 @@ process MultiQC {
     """
     multiqc -f -v .
     """
-}
+}*/
 
 def help() {
     log.info "Usage: "
