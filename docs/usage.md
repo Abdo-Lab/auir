@@ -42,7 +42,8 @@ $ nextflow run auir.nf --reads "data/raw/*_R{1,2}.fastq" --output "test"
 
 ### Other Parameters
 
-#### Set custom parameters
+#### Set custom trimming parameters
+
 ```
 $ nextflow run auir.nf \
     --reads "data/raw/*_R{1,2}.fastq" \
@@ -52,4 +53,11 @@ $ nextflow run auir.nf \
     --slidingwindow 4 \
     --adapters "data/adapters/nextera.fa" \
     --output "test"
+```
+
+#### Set number of threads
+
+Specifies the number of threads to use for each process.
+```
+$ nextflow run auir.nf --reads "data/raw/*_R{1,2}.fastq" --threads 16 --output "test"
 ```
