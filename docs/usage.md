@@ -35,7 +35,7 @@ $ nextflow run auir.nf --reads "data/raw/*_R{1,2}.fastq" --host "data/host/gallu
 
 #### Set output directory
 
-The output parameter writes output files to desired directory.
+The output parameter writes output files to the desired directory.
 ```
 $ nextflow run auir.nf --reads "data/raw/*_R{1,2}.fastq" --output "test"
 ```
