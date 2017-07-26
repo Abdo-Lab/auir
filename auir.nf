@@ -129,33 +129,69 @@ if( !params.index ) {
     }
 }
 
+process AlignReadsToHost {
+    tag { host.baseName }
+        
+    publishDir "${params.output}/BWA", mode: "copy"
+        
+    input:
+        set dataset_id, file(forward), file(reverse) from paired_fastq
+        file idx from index.first()
+        file host
+            
+    output:
+        set dataset_id, file("${dataset_id}.host.sam") into host_sam
+            
+    """ 
+    bwa mem ${host} ${forward} ${reverse} -t ${threads} > ${dataset_id}.host.sam
+    """ 
+}
+
+
 process RemoveHostDNA {
-        echo true
+    tag { dataset_id }
 
-        tag { host.baseName }
-        
-        publishDir "${params.output}/BWA", mode: "copy"
-        
-        input:
-            set dataset_id, file(forward), file(reverse) from paired_fastq
-            file idx from index.first()
-            file host
-            
-        output:
-            set dataset_id, file("${dataset_id}.host.sam") into host_sam
-            
-        """ 
-        bwa mem ${host} ${forward} ${reverse} -t ${threads} > ${dataset_id}.host.sam
-        """ 
-    }  
+    publishDir "{params.output}/BWA", mode: "copy"
 
-/*process SPAdes {
+    input:
+        set dataset_id, file(sam) from host_sam
+
+    output:
+        set dataset_id, file("${dataset_id}.host.sorted.removed.bam") into host_bam
+
+    """
+    samtools view -bS ${sam} | samtools sort -@ ${threads} -o ${dataset_id}.host.sorted.bam
+    samtools view -h -f 4 -b ${dataset_id}.host.sorted.bam  -o ${dataset_id}.host.sorted.removed.bam
+    """
+}
+
+process BAMToFASTQ {
+    tag { dataset_id }
+
+    publishDir "{params.output}/BWA", mode: "copy"
+
+    input:
+        set dataset_id, file(bam) from host_bam
+
+    output:
+        set dataset_id, file("${dataset_id}.non.host.R1.fastq"), file("${dataset_id}.non.host.R2.fastq") into non_host_fastq
+
+    """
+    bedtools \
+      bamtofastq \
+      -i ${bam} \
+      -fq ${dataset_id}.non.host.R1.fastq \
+      -fq2 ${dataset_id}.non.host.R2.fastq
+    """
+}
+
+process SPAdes {
     tag { dataset_id }
 
     publishDir "${params.output}/SPAdes", mode: "copy"
 
     input:
-        set dataset_id, file(forward), file(reverse) from paired_fastq
+        set dataset_id, file(forward), file(reverse) from non_host_fastq
 
     output:
         set dataset_id, file("${dataset_id}.contigs.fa") into (spades_contigs)
@@ -309,7 +345,7 @@ process MultiQC {
     """
     multiqc -f -v .
     """
-}*/
+}
 
 def help() {
     log.info "Usage: "
