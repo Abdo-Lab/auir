@@ -41,6 +41,6 @@ $ nextflow run auir.nf \
     --trailing 3 \
     --minlen 36 \
     --slidiningwindow 4 \
-    --adapters "data/adapters/nextera.fa"
+    --adapters "data/adapters/nextera.fa" \
     --output "test"
 ```
