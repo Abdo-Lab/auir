@@ -9,27 +9,31 @@ $ nextflow run auir.nf --help
 
 ### File Inputs
 
-#### Use custom sequence data
+#### Set custom sequence data
 ```
 $ nextflow run auir.nf --reads "data/raw/*_R{1,2}.fastq"
 ```
 
-#### Use host genome
+#### Set host genome
 ```
 $ nextflow run auir.nf --reads "data/raw/*_R{1,2}.fastq" --host "data/host/gallus.fa"
 ```
 
-#### Use host index
+#### Set host index
 ```
 $ nextflow run auir.nf --reads "data/raw/*_R{1,2}.fastq" --host "data/host/gallus.fa" --index "data/index/*"
 ```
 
 ### File Outputs
+
+#### Set output directory
 ```
 $ nextflow run auir.nf --reads "data/raw/*_R{1,2}.fastq" --output "test"
 ```
 
 ### Other Parameters
+
+#### Set custom parameters
 ```
 $ nextflow run auir.nf \
     --reads "data/raw/*_R{1,2}.fastq" \
