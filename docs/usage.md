@@ -40,7 +40,7 @@ $ nextflow run auir.nf \
     --leading 3 \
     --trailing 3 \
     --minlen 36 \
-    --slidiningwindow 4 \
+    --slidingwindow 4 \
     --adapters "data/adapters/nextera.fa" \
     --output "test"
 ```
