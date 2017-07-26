@@ -4,7 +4,7 @@ TODOs
 ### Documentation
 
 - [ ] Add content to output section.
-- [ ] Add content to usage section.
+- [x] Add content to usage section.
 - [x] Add additional content to installation section.
 
 ### Code
