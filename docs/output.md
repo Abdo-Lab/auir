@@ -27,7 +27,13 @@ As output, this module produces four outputs:
 
 #### Module BWA
 
-BWA is a sequence aligner that takes short fragments of DNA (or reads) and aligns them to a reference genome. It produces output in the standard SAM format and can be used by other tools to extract information related to the structure and quality of an alignment.
+BWA is a sequence aligner that takes short fragments of DNA (or reads) and aligns them to a reference genome. It produces output in the standard SAM format and can be used by other tools to extract information related to the structure and quality of an alignment. This module serves two purposes:
+  - Host-DNA removal
+  - Per-base sequence coverage
+  
+In the host removal step, reads are aligned to the user-input host genome. This produces a SAM formatted alignment file that is used by Samtools to remove reads that aligned to the host.
+
+To calculate per-base sequence coverage, reads 
 
 #### Module SPAdes
 
