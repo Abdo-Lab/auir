@@ -5,18 +5,18 @@ Output
 
 Output files are written to the user-defined output directory (default: test/) Below we discuss the types of output files produced from each pipeline module and where they can be found on your system.
 
-#### FastQC
+#### Module FastQC
 
-#### Trimmomatic
+#### Module Trimmomatic
 
-#### BWA
+#### Module BWA
 
-#### SPAdes
+#### Module SPAdes
 
-#### Blastn
+#### Module Blastn
 
-#### Bedtools2
+#### Module Bedtools2
 
-#### QUAST
+#### Module QUAST
 
-#### MultiQC
+#### Module MultiQC
