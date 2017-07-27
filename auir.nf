@@ -115,8 +115,6 @@ if( !params.index ) {
     process BuildHostIndex {
         tag { host.baseName }
 
-        publishDir "${params.output}/BWA", mode: "copy"
-
         input:
             file(host)
 
@@ -132,7 +130,7 @@ if( !params.index ) {
 process AlignReadsToHost {
     tag { host.baseName }
         
-    publishDir "${params.output}/BWA", mode: "copy"
+    publishDir "${params.output}/Host", mode: "copy"
         
     input:
         set dataset_id, file(forward), file(reverse) from paired_fastq
@@ -151,7 +149,7 @@ process AlignReadsToHost {
 process RemoveHostDNA {
     tag { dataset_id }
 
-    publishDir "{params.output}/BWA", mode: "copy"
+    publishDir "${params.output}/Host", mode: "copy"
 
     input:
         set dataset_id, file(sam) from host_sam
@@ -161,14 +159,14 @@ process RemoveHostDNA {
 
     """
     samtools view -bS ${sam} | samtools sort -@ ${threads} -o ${dataset_id}.host.sorted.bam
-    samtools view -h -f 4 -b ${dataset_id}.host.sorted.bam  -o ${dataset_id}.host.sorted.removed.bam
+    samtools view -h -f 4 -b ${dataset_id}.host.sorted.bam -o ${dataset_id}.host.sorted.removed.bam
     """
 }
 
 process BAMToFASTQ {
     tag { dataset_id }
 
-    publishDir "{params.output}/BWA", mode: "copy"
+    publishDir "${params.output}/Host", mode: "copy"
 
     input:
         set dataset_id, file(bam) from host_bam
