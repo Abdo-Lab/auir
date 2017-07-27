@@ -33,11 +33,9 @@ Christopher Dean <cdean11@colostate.edu>
 
 if( params.index ) {
     index = Channel.fromPath(params.index).toSortedList()
-    println index
 }
 
 host = file(params.host)
-println host
 
 threads = params.threads
 
@@ -55,7 +53,7 @@ Channel
     .ifEmpty { exit 1, "Read pair files could not be found: ${params.reads}" }
     .into { read_pairs; fastqc_pairs; alignment_pairs }
 
-process FastQC {
+process RunFastQC {
     tag { dataset_id }
 
     publishDir "${params.output}/FastQC", mode: 'copy'
@@ -73,7 +71,7 @@ process FastQC {
     """
 }
 
-process Trimmomatic {
+process RunQC {
     tag { dataset_id }
 
     publishDir "${params.output}/Trimmomatic", mode: 'copy',
@@ -175,15 +173,15 @@ process BAMToFASTQ {
         set dataset_id, file("${dataset_id}.non.host.R1.fastq"), file("${dataset_id}.non.host.R2.fastq") into non_host_fastq
 
     """
-    bedtools \
-      bamtofastq \
+    bedtools  \
+       bamtofastq \
       -i ${bam} \
       -fq ${dataset_id}.non.host.R1.fastq \
       -fq2 ${dataset_id}.non.host.R2.fastq
     """
 }
 
-process SPAdes {
+process RunSPAdes {
     tag { dataset_id }
 
     publishDir "${params.output}/SPAdes", mode: "copy"
@@ -208,7 +206,7 @@ process SPAdes {
     """
 }
 
-process Blastn {
+process RunBlast {
     tag { dataset_id }
 
     publishDir "${params.output}/Blastn", mode: 'copy'
@@ -234,7 +232,7 @@ annotated_assemblies = Channel.empty()
 
 reads_and_contigs = alignment_pairs.combine(annotated_spades_contigs2, by: 0)
 
-process BWA {
+process AlignReadsToContigs {
     tag { dataset_id }
 
     publishDir "${params.output}/BWA", mode: "copy"
@@ -267,7 +265,7 @@ process SAMToBAM {
     """
 }
 
-process Bedtools {
+process CalculateCoverage {
     tag { dataset_id }
 
     publishDir "${params.output}/Bedtools", mode: "copy"
@@ -284,7 +282,7 @@ process Bedtools {
     """
 }
 
-process AggregateCounts {
+process AggregateCoverageCounts {
     publishDir "${params.output}/Bedtools", mode: "copy"
 
     input:
@@ -298,14 +296,14 @@ process AggregateCounts {
     """
 }
 
-process QUAST {
+process RunQuast {
     publishDir "${params.output}/QUAST", mode: 'copy'
 
     input:
         file(annotated_contigs) from annotated_assemblies
 
     output:
-        set file("report.tsv") into (quast_logs)
+        file("report.tsv") into (quast_logs)
 
     """
     quast.py \
@@ -331,14 +329,14 @@ multiQCReports = Channel.empty()
     )
     .flatten().toList()
 
-process MultiQC {
+process RunMultiQC {
     publishDir "${params.output}/MultiQC", mode: 'copy'
 
     input:
         file('*') from multiQCReports
 
     output:
-        set file("*multiqc_report.html") into multiQCReport
+        file("*multiqc_report.html") into multiQCReport
 
     """
     multiqc -f -v .
