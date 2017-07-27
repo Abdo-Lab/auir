@@ -3,7 +3,7 @@ Usage
 
 ### Display Help Message
 
-The help parameter displays the available options and commands.
+The `help` parameter displays the available options and commands.
 ```
 $ nextflow run auir.nf --help
 ```
@@ -12,21 +12,21 @@ $ nextflow run auir.nf --help
 
 #### Set custom sequence data
 
-The reads parameter accepts sequence files in standard fastq and gz format.
+The `reads` parameter accepts sequence files in standard fastq and gz format.
 ```
 $ nextflow run auir.nf --reads "data/raw/*_R{1,2}.fastq"
 ```
 
 #### Set host genome
 
-The host parameter accepts a fasta formatted host genome.
+The `host` parameter accepts a fasta formatted host genome.
 ```
 $ nextflow run auir.nf --reads "data/raw/*_R{1,2}.fastq" --host "data/host/gallus.fa"
 ```
 
 #### Set host index
 
-The index parameter allows you to upload pre-built host indexes produced by BWA.
+The `index` parameter allows you to upload pre-built host indexes produced by BWA.
 ```
 $ nextflow run auir.nf --reads "data/raw/*_R{1,2}.fastq" --host "data/host/gallus.fa" --index "data/index/*"
 ```
@@ -35,7 +35,7 @@ $ nextflow run auir.nf --reads "data/raw/*_R{1,2}.fastq" --host "data/host/gallu
 
 #### Set output directory
 
-The output parameter writes output files to the desired directory.
+The `output` parameter writes output files to the desired directory.
 ```
 $ nextflow run auir.nf --reads "data/raw/*_R{1,2}.fastq" --output "test"
 ```
@@ -57,7 +57,7 @@ $ nextflow run auir.nf \
 
 #### Set number of threads
 
-Specifies the number of threads to use for each process.
+The `thread` parameter specifies the number of threads to use for each process.
 ```
 $ nextflow run auir.nf --reads "data/raw/*_R{1,2}.fastq" --threads 16 --output "test"
 ```
