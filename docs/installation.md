@@ -35,5 +35,5 @@ cdeanj/auir         bwa                 9d052c06d12b        About an hour ago   
 ### Step 3 -- Download Github Repository
 ```
 $ git clone https://github.com/cdeanj/auir.git
-$ cd auir
+$ cd auir/
 ```
