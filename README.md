@@ -2,6 +2,7 @@ Overview
 --------
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Nextflow](https://img.shields.io/badge/nextflow-%E2%89%A50.25.1-brightgreen.svg)](https://www.nextflow.io/)
 
 Influenza is an infectious disease caused by RNA viruses within the Orthomyxoviridae family. These viruses cause disease in a variety of animals including birds, pigs and humans. Because of their antigenically variable nature, these viruses are able to escape the innate and adaptive immune system to cause disease -- leading to the development of seasonal vaccine strains.
 
