@@ -1,6 +1,8 @@
 Overview
 --------
 
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
 Influenza is an infectious disease caused by RNA viruses within the Orthomyxoviridae family. These viruses cause disease in a variety of animals including birds, pigs and humans. Because of their antigenically variable nature, these viruses are able to escape the innate and adaptive immune system to cause disease -- leading to the development of seasonal vaccine strains.
 
 With the affordability, accessibility, and high-throughput nature of next generation sequencing instruments, individual labs are now able to sequence the genomes of a variety of organisms in bulk. In the influenza domain, this has led to a number of surveillance ([CDC](https://www.cdc.gov/flu/weekly/fluactivitysurv.htm), [Nextflu](https://academic.oup.com/bioinformatics/article/31/21/3546/194488/nextflu-real-time-tracking-of-seasonal-influenza), [USDA](https://www.aphis.usda.gov/aphis/ourfocus/animalhealth/animal-disease-information/avian-influenza-disease/ct_avian_influenza_disease)), prediction ([Goolge Flu Trends](http://people.sc.fsu.edu/~pbeerli/classes/ISC4931/ISC4931/SciComp/Entries/2013/2/18_Google_searches_and_influenza_files/detecting-influenza-epidemics.pdf), [Twitter Improves Influenza Forecasting](http://currents.plos.org/outbreaks/article/twitter-improves-influenza-forecasting/)), and sequence collection efforts ([Influenza Research Database](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5210613/), [Influenza Virus Database](https://www.ncbi.nlm.nih.gov/genomes/FLU/Database/nph-select.cgi?go=genomeset)).
