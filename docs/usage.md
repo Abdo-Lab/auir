@@ -57,7 +57,7 @@ $ nextflow run auir.nf \
 
 #### Set number of threads
 
-The `thread` parameter specifies the number of threads to use for each process.
+The `threads` parameter specifies the number of threads to use for each process.
 ```
 $ nextflow run auir.nf --reads "data/raw/*_R{1,2}.fastq" --threads 16 --output "test"
 ```
