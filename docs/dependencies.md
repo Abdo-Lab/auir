@@ -43,6 +43,11 @@ This pipeline uses a variety of open-source tools. The tools used, descriptions,
   - Version: 2.10.5
   - Source: https://broadinstitute.github.io/picard/
   
+### QUAST
+  - Description: QUAST is a quality assessment tool for evaluating genome assemblies.
+  - Version: 4.5
+  - DOI: https://doi.org/10.1093/bioinformatics/btt086
+  
 ### Samtools
   - Description: Samtools is a program for manipulating and extracting useful information from alignment files in SAM or BAM format.
   - Version: 1.4.1
@@ -57,9 +62,3 @@ This pipeline uses a variety of open-source tools. The tools used, descriptions,
   - Description: Trimmomatic is a tool for removing low quality base pairs (bps) and adapter sequences from raw sequence data.
   - Version: 0.36
   - DOI: https://doi.org/10.1093/bioinformatics/btu170
-  
-### QUAST
-  - Description: QUAST is a quality assessment tool for evaluating genome assemblies.
-  - Version: 4.5
-  - DOI: https://doi.org/10.1093/bioinformatics/btt086
-
