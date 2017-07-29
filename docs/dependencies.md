@@ -22,6 +22,11 @@ This pipeline uses a variety of open-source tools. The tools used, descriptions,
   - Description: FastQC is a tool that outputs various quality control metrics for input reads in FASTQ format.
   - Version: 0.11.5
   - Source: http://www.bioinformatics.babraham.ac.uk/projects/fastqc/
+ 
+### GATK
+  - Description: A suite of tools for identifying single nucleotide polymorphisms (SNPs).
+  - Version: 4.0
+  - DOI: http://genome.cshlp.org/content/20/9/1297
   
 ### Influenza Virus Database
   - Description: A collection of genomic sequences for Influenza A, B, and C viruses.
@@ -32,6 +37,11 @@ This pipeline uses a variety of open-source tools. The tools used, descriptions,
   - Description: MultiQC is a tool that utilizes software logs to create html reports.
   - Version: 1.0
   - DOI: https://doi.org/10.1093/bioinformatics/btw354
+  
+### Picard
+  - Description: A java-based tool for manipulating SAM and BAM files.
+  - Version: 2.10.5
+  - Source: https://broadinstitute.github.io/picard/
   
 ### Samtools
   - Description: Samtools is a program for manipulating and extracting useful information from alignment files in SAM or BAM format.
