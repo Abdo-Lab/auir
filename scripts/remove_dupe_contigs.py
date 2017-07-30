@@ -19,13 +19,13 @@ def parse_cmdline_params(cmdline_params):
     			help='Please provide a FASTA formatted reference file')
 
     parser.add_argument('-o', '--output', type=str, required=True,
-                        help='Please provide a FASTA formatted reference file')
+                        help='Please provide an output file name in FASTA format')
 
     return parser.parse_args(cmdline_params)
 
 def read_fasta(filename):
     """
-    Removes duplicate annotations from FASTA file.
+    Removes duplicate annotations from FASTA file
     :param (str) filename: FASTA file
     :return (dict) records: A dictionary of FASTA records
     """
@@ -44,8 +44,8 @@ def read_fasta(filename):
 
 def write_fasta(filename, records):
     """
-    Writes a dictionary of FASTA records to file.
-    :param (str) filename: Output file.
+    Writes a dictionary of FASTA records to file
+    :param (str) filename: Output file
     :param (dict) records: A dictionary of FASTA records
     :return (void): Void method
     """
