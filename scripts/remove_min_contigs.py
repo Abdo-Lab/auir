@@ -11,7 +11,7 @@ import argparse
 
 def parse_cmdline_params(cmdline_params):
     
-    info = "Remove contigs below a certain length"
+    info = "Remove minimum contigs from FASTA formatted reference file"
     
     parser = argparse.ArgumentParser(description=info)
     
