@@ -202,9 +202,9 @@ process RunSPAdes {
       -o output
 
     mv output/contigs.fasta .
-    # https://stackoverflow.com/questions/15857088/remove-line-breaks-in-a-fasta-file
-    sed -i -e ':a; \$!N; /^>/!s/\n\\([^>]\\)/\\1/; ta; P; D' contigs.fasta
-    mv contigs.fasta ${dataset_id}.contigs.fa
+    # Remove line breaks from FASTA files
+    # Taken from Kent at https://stackoverflow.com/questions/15857088/remove-line-breaks-in-a-fasta-file
+    awk '/^>/ { print (NR==1 ? "" : RS) \$0; next } { printf "%s", \$0 } END { printf RS }' contigs.fasta > ${dataset_id}.contigs.fa
     """
 }
 
