@@ -26,10 +26,10 @@ Christopher Dean <cdean11@colostate.edu>
 */
 
 
-/*if( params.help ) {
+if( params.help ) {
     help()
     return
-}*/
+}
 
 if( params.index ) {
     index = Channel.fromPath(params.index).toSortedList()
