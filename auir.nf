@@ -53,13 +53,6 @@ Channel
     .ifEmpty { exit 1, "Read pair files could not be found: ${params.reads}" }
     .into { read_pairs; fastqc_pairs; alignment_pairs }
 
-
-/**
- * Runs FastQC on raw sequence data
- *
- * @input channel of FASTQ files
- * @output channel of html reports
- */
 process RunFastQC {
     tag { dataset_id }
 
@@ -78,12 +71,6 @@ process RunFastQC {
     """
 }
 
-/**
- * Removes adapter sequences and low-quality base-pairs
- *
- * @input channel of FASTQ files
- * @output channel of trimmed FASTQ files
- */
 process RunQC {
     tag { dataset_id }
 
@@ -122,12 +109,6 @@ process RunQC {
     """
 }
 
-/**
- * Builds a BWA index
- *
- * @input FASTA formatted reference genome
- * @output channel of index files
- */
 if( !params.index ) {
     process BuildHostIndex {
         tag { host.baseName }
@@ -144,12 +125,6 @@ if( !params.index ) {
     }
 }
 
-/**
- * Aligns trimmed sequence data to host genome
- *
- * @input channel of FASTQ files
- * @output channel of SAM formatted alignments
- */
 process AlignReadsToHost {
     tag { host.baseName }
         
@@ -168,12 +143,6 @@ process AlignReadsToHost {
     """ 
 }
 
-/**
- * Removes alignments with bit 0x4 not set
- *
- * @input channel of SAM formatted alignments
- * @output channel of BAM formatted alignments
- */
 process RemoveHostDNA {
     tag { dataset_id }
 
@@ -191,12 +160,6 @@ process RemoveHostDNA {
     """
 }
 
-/**
- * Converts BAM file to FASTQ file(s)
- *
- * @input channel of BAM formatted alignments
- * @output channel of FASTA files
- */
 process BAMToFASTQ {
     tag { dataset_id }
 
@@ -217,12 +180,6 @@ process BAMToFASTQ {
     """
 }
 
-/**
- * Generates assemblies using De-Bruijn graph
- *
- * @input channel of FASTQ files
- * @output channel of FASTA formatted assemblies
- */
 process RunSPAdes {
     tag { dataset_id }
 
@@ -250,12 +207,6 @@ process RunSPAdes {
     """
 }
 
-/**
- * Annotates contigs with influenza virus database
- *
- * @input channel of FASTA formatted contigs
- * @output channel of FASTA formatted contigs
- */
 process RunBlast {
     tag { dataset_id }
 
@@ -282,14 +233,6 @@ annotated_assemblies = Channel.empty()
 
 reads_and_contigs = alignment_pairs.combine(annotated_spades_contigs2, by: 0)
 
-
-/**
- * Aligns raw sequence data to FASTA formatted contigs
- *
- * @input channel of FASTQ files
- * @input channel of FASTA formatted contigs
- * @output channel of SAM formatted alignments
- */
 process AlignReadsToContigs {
     tag { dataset_id }
 
@@ -307,12 +250,6 @@ process AlignReadsToContigs {
     """
 }
 
-/**
- * Converts SAM to BAM file(s)
- *
- * @input channel of SAM formatted alignments
- * @output channel of BAM formatted alignments
- */
 process SAMToBAM {
     tag { dataset_id }
 
@@ -329,12 +266,6 @@ process SAMToBAM {
     """
 }
 
-/**
- * Generates genome coverage statistics
- *
- * @input channel of BAM formatted alignments
- * @output channel of TSV formatted coverage statistics
- */
 process CalculateCoverage {
     tag { dataset_id }
 
@@ -352,12 +283,6 @@ process CalculateCoverage {
     """
 }
 
-/**
- * Aggregates genome coverage statistics into a single file
- *
- * @input channel of TSV formatted genome coverage statistics
- * @output channel of TSV formatted genome coverage statistics
- */
 process AggregateCoverageCounts {
     publishDir "${params.output}/Bedtools", mode: "copy"
 
@@ -372,12 +297,6 @@ process AggregateCoverageCounts {
     """
 }
 
-/**
- * Generates genome assembly summary statistics
- *
- * @input channel of annotated contigs
- * @output channel of TSV formatted features
- */
 process RunQuast {
     publishDir "${params.output}/QUAST", mode: 'copy'
 
@@ -411,12 +330,6 @@ multiQCReports = Channel.empty()
     )
     .flatten().toList()
 
-/**
- * Generates html reports from collected log files
- *
- * @input channel of log files
- * @output channel of html reports
- */
 process RunMultiQC {
     publishDir "${params.output}/MultiQC", mode: 'copy'
 
