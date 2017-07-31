@@ -219,7 +219,7 @@ process RunBlast {
         set dataset_id, file("${dataset_id}.contigs.annotated.fa") into (annotated_spades_contigs, annotated_spades_contigs2)
 
     """
-    blastn -db InfluenzaDB -query ${contigs} -max_hsps 1 -max_target_seqs 1 -outfmt "10 stitle" -num_threads ${threads} > ${dataset_id}.contig.description.tmp
+    blastn -db InfluenzaDB -query ${contigs} -max_hsps 1 -max_target_seqs 1 -outfmt "10 stitle" -num_threads ${threads} -task megablast > ${dataset_id}.contig.description.tmp
     cat ${dataset_id}.contig.description.tmp | sed -e '/Influenza/s/^/>/' > ${dataset_id}.contig.description.txt
     sed -i 's/ /_/g' ${dataset_id}.contig.description.txt
     awk '/^>/ { getline <"${dataset_id}.contig.description.txt" } 1 ' ${contigs} > ${dataset_id}.contigs.annotated.fa
