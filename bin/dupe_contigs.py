@@ -36,7 +36,7 @@ def read_fasta(filename):
             value = fp.next()
             if key in records:
                 if len(value) > len(records[key]):
-                    records[key] = value.rstrip()
+                    records[key] = value
             else:
                 records[key] = value
     fp.close()
