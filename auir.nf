@@ -26,22 +26,34 @@ Christopher Dean <cdean11@colostate.edu>
 */
 
 
-if( params.help ) {
+/*if( params.help ) {
     help()
     return
-}
+}*/
 
-if( params.index ) {
-    index = Channel.fromPath(params.index).toSortedList()
+if( !nextflow.version.matches('0.25+') ) {
+    println "This workflow requires Nextflow version 0.25 or greater -- You are running version $nextflow.version"
+    println "Run ./nextflow self-update to update Nextflow to the latest available version."
+    exit 1
 }
-
-host = file(params.host)
+if( params.index ) { 
+    index = Channel.fromPath(params.host_index).toSortedList() 
+    if( !index.exists() ) exit 1, "Host index files could not be found: ${params.index}"    
+}
+if( params.host ) {     
+    host = file(params.host)
+    if( !host.exists() ) exit 1, "Host genome file could not be found: ${params.host}"          
+}
+if( params.adapters ) {     
+    adapters = file(params.adapters) 
+    if( !adapters.exists() ) exit 1, "Adapter file could not be found: ${params.adapters}"  
+}
+if( params.fqc_adapters ) {
+    fqc_adapters = file(params.fqc_adapters)                             
+    if( !fqc_adapters.exists() ) exit 1, "Tab-delimited adapter file could not be found: ${params.fqc_adapters}" 
+}
 
 threads = params.threads
-
-adapters = file(params.adapters)
-
-fqc_adapters = file(params.fqc_adapters)
 
 leading = params.leading
 trailing = params.trailing
