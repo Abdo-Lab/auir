@@ -56,6 +56,8 @@ trailing = params.trailing
 slidingwindow = params.slidingwindow
 minlen = params.minlen
 
+min_contig = params.min_contig
+
 Channel
     .fromFilePairs( params.reads, flat: true )
     .ifEmpty { return fastq_error(params.reads) }
@@ -201,6 +203,7 @@ process RunSPAdes {
     output:
         set dataset_id, file("${dataset_id}.contigs.fa") into (spades_contigs)
 
+    script:
     """
     spades.py \
       -t ${threads} \
@@ -213,7 +216,8 @@ process RunSPAdes {
     mv output/contigs.fasta .
     # Remove line breaks from FASTA files
     # Taken from Kent at https://stackoverflow.com/questions/15857088/remove-line-breaks-in-a-fasta-file
-    awk '/^>/ { print (NR==1 ? "" : RS) \$0; next } { printf "%s", \$0 } END { printf RS }' contigs.fasta > ${dataset_id}.contigs.fa
+    awk '/^>/ { print (NR==1 ? "" : RS) \$0; next } { printf "%s", \$0 } END { printf RS }' contigs.fasta > ${dataset_id}.contigs.temp.fa
+    python $baseDir/bin/min_contigs.py -r ${dataset_id}.contigs.temp.fa -m ${min_contig} -o ${dataset_id}.contigs.fa
     """
 }
 
@@ -276,7 +280,24 @@ process SAMToBAM {
     """
 }
 
-process CalculateCoverage {
+process RemovePCRDuplicates {
+    tag { dataset_id }
+
+    publishDir "${params.output}/RemovePCRDuplicates", mode: "copy"
+
+    input:
+        set dataset_id, file(bam) from bams
+
+    output:
+        set dataset_id, file("${dataset_id}.alignment.rmdup.bam") into (pcr_rmdup_bams)
+
+    """
+    samtools rmdup ${bam} ${dataset_id}.alignment.rmdup.bam
+    """
+}
+
+
+/*process CalculateCoverage {
     tag { dataset_id }
 
     publishDir "${params.output}/CalculateCoverage", mode: "copy"
@@ -352,7 +373,7 @@ process RunMultiQC {
     """
     multiqc -f -v .
     """
-}
+}*/
 
 def nextflow_version_error() {
     println ""
