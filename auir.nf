@@ -32,9 +32,7 @@ Christopher Dean <cdean11@colostate.edu>
 }*/
 
 if( !nextflow.version.matches('0.25+') ) {
-    println "This workflow requires Nextflow version 0.25 or greater -- You are running version $nextflow.version"
-    println "Run ./nextflow self-update to update Nextflow to the latest available version."
-    exit 1
+    return nextflow_version_error()
 }
 if( params.index ) { 
     index = Channel.fromPath(params.index).toSortedList() 
@@ -356,6 +354,14 @@ process RunMultiQC {
     """
 }
 
+def nextflow_version_error() {
+    println ""
+    println "This workflow requires Nextflow version 0.25 or greater -- You are running version $nextflow.version"
+    println "Run ./nextflow self-update to update Nextflow to the latest available version."
+    println ""
+    return 1
+}
+
 def adapter_error(def input) {
     println ""
     println "[params.adapters] fail to open: '" + input + "' : No such file or directory"
@@ -367,26 +373,29 @@ def fastqc_error(def input) {
     println ""
     println "[params.fqc_adapters] fail to open: '" + input + "' : No such file or directory"
     println ""
+    return 1
 }
 
 def fastq_error(def input) {
     println ""
     println "[params.reads] fail to open: '" + input + "' : No such file or directory"
     println ""
+    return 1
 }
 
 def host_error(def input) {
     println ""
     println "[params.host] fail to open: '" + input + "' : No such file or directory"
     println ""
+    return 1
 }
 
 def index_error(def input) {
     println ""
     println "[params.index] fail to open: '" + input + "' : No such file or directory"
     println ""
+    return 1
 }
-
 
 def help() {
     log.info "Usage: "
