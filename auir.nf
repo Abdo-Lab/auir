@@ -230,7 +230,7 @@ process RunBlast {
         set dataset_id, file(contigs) from spades_contigs
 
     output:
-        set dataset_id, file("${dataset_id}.contigs.annotated.fa") into (annotated_spades_contigs, annotated_spades_contigs2)
+        set dataset_id, file("${dataset_id}.contigs.annotated.fa") into (annotated_spades_contigs, annotated_spades_contigs2, annotated_spades_contigs3)
 
     """
     blastn -db InfluenzaDB -query ${contigs} -max_hsps 1 -max_target_seqs 1 -outfmt "10 stitle" -num_threads ${threads} -task megablast > ${dataset_id}.contig.description.tmp
@@ -293,6 +293,24 @@ process RemovePCRDuplicates {
 
     """
     samtools rmdup ${bam} ${dataset_id}.alignment.rmdup.bam
+    """
+}
+
+freebayes_tuple = pcr_rmdup_bams.combine(annotated_spades_contigs3, by: 0)
+
+process RunFreebayes {
+    tag { dataset_id }
+
+    publishDir "${params.output}/RunFreebayes", mode: "copy"
+
+    input:
+        set dataset_id, file(bam), file(contigs) from freebayes_tuple
+
+    output:
+        set dataset_id, file("${dataset_id}.vcf") into vcfs
+
+    """
+    freebayes -f ${contigs} -p 2 -C 5 ${bam} > ${dataset_id}.vcf
     """
 }
 
