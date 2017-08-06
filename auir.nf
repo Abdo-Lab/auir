@@ -37,20 +37,20 @@ if( !nextflow.version.matches('0.25+') ) {
     exit 1
 }
 if( params.index ) { 
-    index = Channel.fromPath(params.host_index).toSortedList() 
-    if( !index.exists() ) exit 1, "Host index files could not be found: ${params.index}"    
+    index = Channel.fromPath(params.index).toSortedList() 
+    if( !index.exists() ) return index_error(index)
 }
 if( params.host ) {     
     host = file(params.host)
-    if( !host.exists() ) exit 1, "Host genome file could not be found: ${params.host}"          
+    if( !host.exists() ) return host_error(host)
 }
 if( params.adapters ) {     
     adapters = file(params.adapters) 
-    if( !adapters.exists() ) exit 1, "Adapter file could not be found: ${params.adapters}"  
+    if( !adapters.exists() ) return adapter_error(adapters)
 }
 if( params.fqc_adapters ) {
     fqc_adapters = file(params.fqc_adapters)                             
-    if( !fqc_adapters.exists() ) exit 1, "Tab-delimited adapter file could not be found: ${params.fqc_adapters}" 
+    if( !fqc_adapters.exists() ) return fastqc_error(fqc_adapters)
 }
 
 threads = params.threads
@@ -62,7 +62,7 @@ minlen = params.minlen
 
 Channel
     .fromFilePairs( params.reads, flat: true )
-    .ifEmpty { exit 1, "Read pair files could not be found: ${params.reads}" }
+    .ifEmpty { return fastq_error(params.reads) }
     .into { read_pairs; fastqc_pairs; alignment_pairs }
 
 process RunFastQC {
@@ -355,6 +355,38 @@ process RunMultiQC {
     multiqc -f -v .
     """
 }
+
+def adapter_error(def input) {
+    println ""
+    println "[params.adapters] fail to open: '" + input + "' : No such file or directory"
+    println ""
+    return 1
+}
+
+def fastqc_error(def input) {
+    println ""
+    println "[params.fqc_adapters] fail to open: '" + input + "' : No such file or directory"
+    println ""
+}
+
+def fastq_error(def input) {
+    println ""
+    println "[params.reads] fail to open: '" + input + "' : No such file or directory"
+    println ""
+}
+
+def host_error(def input) {
+    println ""
+    println "[params.host] fail to open: '" + input + "' : No such file or directory"
+    println ""
+}
+
+def index_error(def input) {
+    println ""
+    println "[params.index] fail to open: '" + input + "' : No such file or directory"
+    println ""
+}
+
 
 def help() {
     log.info "Usage: "
