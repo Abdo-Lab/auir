@@ -401,6 +401,7 @@ def help() {
     println ""
     println "Program: Auir"
     println "Version: $workflow.repository - $workflow.revision [$workflow.commitId]"
+    println "Documentation: https://github.com/cdeanj/auir"
     println "Contact: Christopher Dean <cdean11@colostate.edu>"
     println ""
     println "Usage:    nextflow run auir.nf [options]"
