@@ -64,7 +64,7 @@ Channel
 process RunFastQC {
     tag { dataset_id }
 
-    publishDir "${params.output}/FastQC", mode: 'copy'
+    publishDir "${params.output}/RunFastQC", mode: 'copy'
 
     input:
         set dataset_id, file(forward), file(reverse) from fastqc_pairs
@@ -82,7 +82,7 @@ process RunFastQC {
 process RunQC {
     tag { dataset_id }
 
-    publishDir "${params.output}/Trimmomatic", mode: 'copy',
+    publishDir "${params.output}/RunQC", mode: 'copy',
         saveAs: { filename ->
             if(filename.indexOf("P.fastq") > 0) "Paired/$filename"
             else if(filename.indexOf("U.fastq") > 0) "Unpaired/$filename"
@@ -121,6 +121,8 @@ if( !params.index ) {
     process BuildHostIndex {
         tag { host.baseName }
 
+        publishDir "${params.output}/BuildHostIndex", mode: "copy"
+
         input:
             file(host)
 
@@ -136,7 +138,7 @@ if( !params.index ) {
 process AlignReadsToHost {
     tag { host.baseName }
         
-    publishDir "${params.output}/Host", mode: "copy"
+    publishDir "${params.output}/AlignReadsToHost", mode: "copy"
         
     input:
         set dataset_id, file(forward), file(reverse) from paired_fastq
@@ -154,7 +156,7 @@ process AlignReadsToHost {
 process RemoveHostDNA {
     tag { dataset_id }
 
-    publishDir "${params.output}/Host", mode: "copy"
+    publishDir "${params.output}/RemoveHostDNA", mode: "copy"
 
     input:
         set dataset_id, file(sam) from host_sam
@@ -171,7 +173,7 @@ process RemoveHostDNA {
 process BAMToFASTQ {
     tag { dataset_id }
 
-    publishDir "${params.output}/Host", mode: "copy"
+    publishDir "${params.output}/BAMToFASTQ", mode: "copy"
 
     input:
         set dataset_id, file(bam) from host_bam
@@ -191,7 +193,7 @@ process BAMToFASTQ {
 process RunSPAdes {
     tag { dataset_id }
 
-    publishDir "${params.output}/SPAdes", mode: "copy"
+    publishDir "${params.output}/RunSPAdes", mode: "copy"
 
     input:
         set dataset_id, file(forward), file(reverse) from non_host_fastq
@@ -218,7 +220,7 @@ process RunSPAdes {
 process RunBlast {
     tag { dataset_id }
 
-    publishDir "${params.output}/Blastn", mode: 'copy'
+    publishDir "${params.output}/RunBlast", mode: 'copy'
 
     input:
         set dataset_id, file(contigs) from spades_contigs
@@ -244,7 +246,7 @@ reads_and_contigs = alignment_pairs.combine(annotated_spades_contigs2, by: 0)
 process AlignReadsToContigs {
     tag { dataset_id }
 
-    publishDir "${params.output}/BWA", mode: "copy"
+    publishDir "${params.output}/AlignReadsToContigs", mode: "copy"
 
     input:
         set dataset_id, file(forward), file(reverse), file(contigs) from reads_and_contigs
@@ -261,7 +263,7 @@ process AlignReadsToContigs {
 process SAMToBAM {
     tag { dataset_id }
 
-    publishDir "${params.output}/BWA", mode: "copy"
+    publishDir "${params.output}/SAMToBAM", mode: "copy"
 
     input:
         set dataset_id, file(sam) from sams
@@ -277,7 +279,7 @@ process SAMToBAM {
 process CalculateCoverage {
     tag { dataset_id }
 
-    publishDir "${params.output}/Bedtools", mode: "copy"
+    publishDir "${params.output}/CalculateCoverage", mode: "copy"
 
     input:
         set dataset_id, file(bam) from bams
@@ -292,7 +294,7 @@ process CalculateCoverage {
 }
 
 process AggregateCoverageCounts {
-    publishDir "${params.output}/Bedtools", mode: "copy"
+    publishDir "${params.output}/AggregateCoverageCounts", mode: "copy"
 
     input:
         file(counts) from coordinates.toSortedList()
@@ -306,7 +308,7 @@ process AggregateCoverageCounts {
 }
 
 process RunQuast {
-    publishDir "${params.output}/QUAST", mode: 'copy'
+    publishDir "${params.output}/RunQUAST", mode: 'copy'
 
     input:
         file(annotated_contigs) from annotated_assemblies
@@ -339,7 +341,7 @@ multiQCReports = Channel.empty()
     .flatten().toList()
 
 process RunMultiQC {
-    publishDir "${params.output}/MultiQC", mode: 'copy'
+    publishDir "${params.output}/RunMultiQC", mode: 'copy'
 
     input:
         file('*') from multiQCReports
