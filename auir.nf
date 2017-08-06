@@ -26,11 +26,9 @@ Christopher Dean <cdean11@colostate.edu>
 */
 
 
-/*if( params.help ) {
-    help()
-    return
-}*/
-
+if( params.help ) {
+    return help()
+}
 if( !nextflow.version.matches('0.25+') ) {
     return nextflow_version_error()
 }
@@ -412,4 +410,5 @@ def help() {
     log.info "  Christopher Dean <cdean11@colostate.edu>"
     log.info "Version: "
     log.info "  Auir 1.0"
+    return 1
 }
