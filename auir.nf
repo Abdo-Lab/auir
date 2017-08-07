@@ -217,7 +217,8 @@ process RunSPAdes {
     # Remove line breaks from FASTA files
     # Taken from Kent at https://stackoverflow.com/questions/15857088/remove-line-breaks-in-a-fasta-file
     awk '/^>/ { print (NR==1 ? "" : RS) \$0; next } { printf "%s", \$0 } END { printf RS }' contigs.fasta > ${dataset_id}.contigs.temp.fa
-    python $baseDir/bin/min_contigs.py -r ${dataset_id}.contigs.temp.fa -m ${min_contig} -o ${dataset_id}.contigs.fa
+    python $baseDir/bin/min_contigs.py -r ${dataset_id}.contigs.temp.fa -m ${min_contig} -o ${dataset_id}.contigs.min.removed.fa
+    python $baseDir/bin/dupe_contigs.py -r ${dataset_id}.contigs.min.removed.fa -o ${dataset_id}.contigs.fa
     """
 }
 
@@ -283,16 +284,17 @@ process SAMToBAM {
 process RemovePCRDuplicates {
     tag { dataset_id }
 
-    publishDir "${params.output}/RemovePCRDuplicates", mode: "copy"
+    publishDir "${params.output}/RemovePCRDuplicates", mode: "copy", pattern: "*.rmdup.bam"
 
     input:
         set dataset_id, file(bam) from bams
 
     output:
-        set dataset_id, file("${dataset_id}.alignment.rmdup.bam") into (pcr_rmdup_bams)
+        set dataset_id, file("${dataset_id}.alignment.rmdup.bam"), file("${dataset_id}.alignment.rmdup.bam.bai") into (pcr_rmdup_bams)
 
     """
     samtools rmdup ${bam} ${dataset_id}.alignment.rmdup.bam
+    samtools index ${dataset_id}.alignment.rmdup.bam
     """
 }
 
@@ -304,7 +306,7 @@ process RunFreebayes {
     publishDir "${params.output}/RunFreebayes", mode: "copy"
 
     input:
-        set dataset_id, file(bam), file(contigs) from freebayes_tuple
+        set dataset_id, file(bam), file(bai), file(contigs) from freebayes_tuple
 
     output:
         set dataset_id, file("${dataset_id}.vcf") into vcfs
@@ -313,7 +315,6 @@ process RunFreebayes {
     freebayes -f ${contigs} -p 2 -C 5 ${bam} > ${dataset_id}.vcf
     """
 }
-
 
 /*process CalculateCoverage {
     tag { dataset_id }
@@ -347,8 +348,6 @@ process AggregateCoverageCounts {
 }
 
 process RunQuast {
-    publishDir "${params.output}/RunQUAST", mode: 'copy'
-
     input:
         file(annotated_contigs) from annotated_assemblies
 
@@ -463,6 +462,8 @@ def help() {
     println "Algorithm options:"
     println ""
     println "    --threads       INT      number of threads to use for each process"
+    println "    --ploidy        INT      genome copy number"
+    println "    --min-alt-count INT      requires this number of observations supporting an alternate allele"
     println ""
     println "Help options:"
     println ""
