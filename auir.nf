@@ -284,13 +284,13 @@ process SAMToBAM {
 process RemovePCRDuplicates {
     tag { dataset_id }
 
-    publishDir "${params.output}/RemovePCRDuplicates", mode: "copy", pattern: "*.rmdup.bam"
+    publishDir "${params.output}/RemovePCRDuplicates", mode: "copy", pattern: "*.bam"
 
     input:
         set dataset_id, file(bam) from bams
 
     output:
-        set dataset_id, file("${dataset_id}.alignment.rmdup.bam"), file("${dataset_id}.alignment.rmdup.bam.bai") into (pcr_rmdup_bams)
+        set dataset_id, file("${dataset_id}.alignment.rmdup.bam"), file("${dataset_id}.alignment.rmdup.bam.bai") into (pcr_rmdup_bams, bedtools_bams)
 
     """
     samtools rmdup ${bam} ${dataset_id}.alignment.rmdup.bam
@@ -316,13 +316,13 @@ process RunFreebayes {
     """
 }
 
-/*process CalculateCoverage {
+process CalculateCoverage {
     tag { dataset_id }
 
     publishDir "${params.output}/CalculateCoverage", mode: "copy"
 
     input:
-        set dataset_id, file(bam) from bams
+        set dataset_id, file(bam) from bedtools_bams
 
     output:
         file("${dataset_id}.depth.coordinates") into (coordinates)
@@ -340,7 +340,7 @@ process AggregateCoverageCounts {
         file(counts) from coordinates.toSortedList()
 
     output:
-        file("aggregated_counts.tsv") into res
+        file("aggregated_counts.tsv") into aggregated_counts
 
     """
     cat ${counts} > aggregated_counts.tsv
@@ -390,7 +390,7 @@ process RunMultiQC {
     """
     multiqc -f -v .
     """
-}*/
+}
 
 def nextflow_version_error() {
     println ""
