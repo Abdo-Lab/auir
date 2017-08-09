@@ -20,7 +20,10 @@ $ docker pull cdeanj/auir -a
 When the download is complete, you should have nine Docker images.
 ```
 $ docker images
+
 REPOSITORY          TAG                 IMAGE ID            CREATED             SIZE
+cdeanj/auir         freebayes           51b2af237677        2 days ago          665.5 MB
+cdeanj/auir         multiqc             e9bebd42d92c        13 days ago         412.3 MB
 cdeanj/auir         bedtools2           7db588a1bb8e        About an hour ago   330.3 MB
 cdeanj/auir         fastqc              27b4b5000102        About an hour ago   749.2 MB
 cdeanj/auir         makeblastdb         3c196b1d1e92        About an hour ago   1.609 GB
@@ -32,8 +35,13 @@ cdeanj/auir         samtools            09ba9b5ec0b5        About an hour ago   
 cdeanj/auir         bwa                 9d052c06d12b        About an hour ago   262.2 MB
 ```
 
-### Step 3 -- Download Github Repository
+### Step 3 -- Download Source Code
 ```
 $ git clone https://github.com/cdeanj/auir.git
 $ cd auir/
+```
+
+### Step 4 -- Run a Test
+```
+$ nextflow run auir.nf --threads 8 --output test
 ```
