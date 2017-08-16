@@ -1,19 +1,21 @@
-# Set the base image
 FROM cdeanj/ivd:1.0
+MAINTAINER Chris Dean <cdean11@colostate.edu>
 
-# Set image metadata
-LABEL author="Christopher Dean" \
-      description="NCBI-BLAST+ Docker image" \
-      maintainer="cdean11@colostate.edu"
+LABEL org.label-schema.build-date="2017-08-16T01:31:38Z" \
+      org.label-schema.name="AUIR" \
+      org.label-schema.description="A Docker image for Blast" \
+      org.label-schema.url="https://github.com/cdeanj/auir" \
+      org.label-schema.vcs-ref="71f505cbdd9a4501ecbc2a39b2352ddca7b37fb7" \
+      org.label-schema.vcs-url="https://github.com/cdeanj/auir" \
+      org.label-schema.schema-version="1.0.0-rc1" \
+      org.label-schema.vendor="Abdo Lab"
 
-# Install core libraries
 RUN apt-get update && apt-get install -y --no-install-recommends \
     build-essential \
     ca-certificates \
     ncbi-blast+ \
  && rm -rf /var/lib/apt/lists/*
 
-# Set environment variables
 ENV BLASTDB_DIR="BLASTDB" \
     BLASTDB_TYPE="nucl" \
     BLASTDB_NAME="InfluenzaDB" \
@@ -21,7 +23,6 @@ ENV BLASTDB_DIR="BLASTDB" \
 
 ENV IVD_DIR="ivd"
 
-# Make blast database
 RUN cd /opt \
     && mkdir $BLASTDB_DIR
 

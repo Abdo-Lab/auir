@@ -1,22 +1,22 @@
-# Set the base image
 FROM openjdk:alpine
+MAINTAINER Chris Dean <cdean11@colostate.edu>
 
-# Set image metadata
-LABEL author="Christopher Dean" \
-      description="Trimmomatic (v0.36) Docker image" \
-      maintainer="cdean11@colostate.edu"
+LABEL org.label-schema.build-date="2017-08-16T01:31:38Z" \
+      org.label-schema.name="AUIR" \
+      org.label-schema.description="A Docker image for Trimmomatic" \
+      org.label-schema.url="https://github.com/cdeanj/auir" \
+      org.label-schema.vcs-ref="71f505cbdd9a4501ecbc2a39b2352ddca7b37fb7" \
+      org.label-schema.vcs-url="https://github.com/cdeanj/auir" \
+      org.label-schema.schema-version="1.0.0-rc1" \
+      org.label-schema.vendor="Abdo Lab"
 
-# Install core packages
 RUN apk add --update bash && rm -rf /var/cache/apk/*
 
-# Setup environment variables
 ENV TRIMMOMATIC_SOURCE="Trimmomatic-0.36.zip" \
     TRIMMOMATIC_HOME="/opt/trimmomatic"
 
-# Add Trimmomatic source file to build context
 COPY $TRIMMOMATIC_SOURCE $TRIMMOMATIC_HOME/$TRIMMOMATIC_SOURCE
 
-# Install Trimmomatic
 RUN cd $TRIMMOMATIC_HOME \
     && unzip $TRIMMOMATIC_SOURCE \
     && rm $TRIMMOMATIC_SOURCE
