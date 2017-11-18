@@ -9,4 +9,4 @@ To run AUIR, you will need the following libraries and tools installed on your s
   - Java 7+ (Required)
   - Nextflow (Required)
   
-NOTE: If you choose not to install Docker, you will need to download each of the required dependencies and add the executable paths to your .bashrc file to run the pipeline. A list of these dependencies can be found in the [Dependencies](https://github.com/cdeanj/amrplusplus/blob/master/docs/dependencies.md) section of this document.
+NOTE: If you choose not to install Docker, you will need to download each of the required dependencies and add the executable paths to your .bashrc file to run the pipeline. A list of these dependencies can be found in the [Dependencies](https://github.com/cdeanj/auir/blob/master/docs/dependencies.md) section of this document.
