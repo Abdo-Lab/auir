@@ -12,8 +12,8 @@ LABEL org.label-schema.build-date="2018-01-05T06:52:21Z" \
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
     build-essential \
-    dh-autoreconf \
     ca-certificates \
+    dh-autoreconf \
     pkg-config \
     tabix \
     wget \
