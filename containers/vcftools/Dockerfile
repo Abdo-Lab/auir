@@ -11,8 +11,8 @@ LABEL org.label-schema.build-date="2018-01-05T06:52:21Z" \
       org.label-schema.vendor="Abdo Lab"
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    dh-autoreconf \
     build-essential \
+    dh-autoreconf \
     ca-certificates \
     pkg-config \
     tabix \
