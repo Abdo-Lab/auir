@@ -67,7 +67,7 @@ def split_contigs(fasta_files):
 
 		for k, v in fasta_dict.items():
 			new_header = '>' + sample_id + '_' + v.header[1:len(v.header)]
-			open(sample_id + '.' + k + '.fa', 'w').write(new_header + '\n' + v.seq)
+			open(sample_id + '.' + k + '.fa', 'w').write(new_header + '\n' + v.seq + '\n')
 
 if __name__ == "__main__":
 	opts = parse_cmdline_params(sys.argv[1:])
