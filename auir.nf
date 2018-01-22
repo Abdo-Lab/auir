@@ -1,31 +1,5 @@
 #!/usr/bin/env nextflow
 
-/*
-vim: syntax=groovy
--*- mode: groovy;-*-
-================================================================================
-=                     A I | A S S E M B L Y | P I P E L I N E                  =
-================================================================================
-@Author
-Christopher Dean <cdean11@colostate.edu>
---------------------------------------------------------------------------------
- @Homepage
- https://github.com/cdeanj/auir
---------------------------------------------------------------------------------
- @Documentation
- https://github.com/cdeanj/auir/blob/master/README.md
---------------------------------------------------------------------------------
- @Licence
- https://github.com/cdeanj/auir/blob/master/LICENSE
---------------------------------------------------------------------------------
- Processes overview
- - Run auir influenza pipeline
-================================================================================
-=                           C O N F I G U R A T I O N                          =
-================================================================================
-*/
-
-
 if( params.help ) {
     return help()
 }
@@ -231,7 +205,7 @@ process RunBlast {
         set dataset_id, file(contigs) from spades_contigs
 
     output:
-        set dataset_id, file("${dataset_id}.contigs.annotated.fa") into (annotated_spades_contigs, annotated_spades_contigs2, annotated_spades_contigs3)
+        file("${dataset_id}.contigs.annotated.fa") into (annotated_spades_contigs, annotated_spades_contigs2, annotated_spades_contigs3)
 
     """
     blastn -db InfluenzaDB -query ${contigs} -max_hsps 1 -max_target_seqs 1 -outfmt "10 stitle" -num_threads ${threads} -task megablast > ${dataset_id}.contig.description.tmp
@@ -241,12 +215,52 @@ process RunBlast {
     """
 }
 
+process SplitSegments {
+    tag { }
+
+    publishDir "${params.output}/SplitSegments", mode: 'copy',
+        saveAs: { filename ->
+              if(filename.indexOf("PB2.fa") > 0) "PB2/$filename"
+              else if(filename.indexOf("PB1.fa") > 0) "PB1/$filename"
+              else if(filename.indexOf("PA.fa") > 0) "PA/$filename"
+              else if(filename.indexOf("HA.fa") > 0) "HA/$filename"
+              else if(filename.indexOf("NP.fa") > 0) "NP/$filename"
+              else if(filename.indexOf("NA.fa") > 0) "NA/$filename"
+              else if(filename.indexOf("M1_M2.fa") > 0) "M1_M2/$filename"
+              else if(filename.indexOf("NS1_NEP.fa") > 0) "NS1_NEP/$filename"
+              else {}
+        }
+
+    input:
+        file(contigs) from annotated_spades_contigs.collect()
+
+    output:
+        file("master.*") into segments
+  
+    script:
+    """
+    echo $contigs
+    python $baseDir/bin/split_contigs.py -i ${contigs}
+    cat *.PB2.fa >> master.PB2.fa
+    cat *.PB1.fa >> master.PB1.fa
+    cat *.PA.fa >> master.PA.fa
+    cat *.HA.fa >> master.HA.fa
+    cat *.NP.fa >> master.NP.fa
+    cat *.NA.fa >> master.NA.fa
+    cat *.M1_M2.fa >> master.M1_M2.fa
+    cat *.NS1_NEP.fa >> master.NS1_NEP.fa
+    """
+}
+
+// Rethink what you're doing here.
+
+/*
 annotated_assemblies = Channel.empty()
-    .mix(annotated_spades_contigs)
+    .mix(annotated_spades_contigs2)
     .flatten()
     .toList()
 
-reads_and_contigs = alignment_pairs.combine(annotated_spades_contigs2, by: 0)
+reads_and_contigs = alignment_pairs.combine(annotated_spades_contigs3, by: 0)
 
 process AlignReadsToContigs {
     tag { dataset_id }
@@ -390,7 +404,7 @@ process RunMultiQC {
     """
     multiqc -f -v .
     """
-}
+}*/
 
 def nextflow_version_error() {
     println ""
